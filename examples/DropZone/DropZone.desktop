@@ -1,0 +1,4 @@
+[Desktop Entry]
+Name=Document Mover
+Exec=/home/cola/Workspaces/Linux/DropZone/DropZone.sh %U
+Type=Application
