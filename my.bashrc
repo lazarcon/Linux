@@ -24,7 +24,8 @@
 #=============================================================
 
 # --> Comments added by HOWTO author.
-
+# Reload .bashrc:
+# $source ~/.bashrc
 
 #-------------------------------------------------------------
 # Source global definitions (if any)
@@ -213,7 +214,7 @@ alias mkdir='mkdir -p'
 alias h='history'
 alias j='jobs -l'
 alias which='type -a'
-alias ..='cd ..'
+alias ..='cd ..'  
 alias path='echo -e ${PATH//:/\\n}'
 alias libpath='echo -e ${LD_LIBRARY_PATH//:/\\n}'
 alias print='/usr/bin/lp -o nobanner -d $LPDEST'
@@ -228,7 +229,7 @@ alias df='df -kTh'
 # The 'ls' family (this assumes you use a recent GNU ls)
 #-------------------------------------------------------------
 alias ll="ls -l --group-directories-first"
-alias ls='ls -hF --color'  # add colors for filetype recognition
+alias ls='ls -lhF --color' # add colors for filetype recognition
 alias la='ls -Al'          # show hidden files
 alias lx='ls -lXB'         # sort by extension
 alias lk='ls -lSr'         # sort by size, biggest last
@@ -243,6 +244,11 @@ alias tree='tree -Csu'     # nice alternative to 'recursive ls'
 # function ll(){ ls -l "$@"| egrep "^d" ; ls -lXB "$@" 2>&-| \
 #                egrep -v "^d|total "; }
 
+# SSH Connections
+alias pi='ssh pi@raspberrypi'
+alias mediacenter='ssh root@mediacenter'
+alias aws='ssh -i ~/Workspaces/Server/AWS/AWSKeypair.pem ec2-user@ec2-52-16-84-23.eu-west-1.compute.amazonaws.com'
+alias awscp='scp -i ~/Workspaces/Server/AWS/AWSKeypair.pem ~/Projects/Tiefer-Gedacht/tiefer-gedacht.sql ec2-user@ec2-52-16-84-23.eu-west-1.compute.amazonaws.com:~'
 
 #-------------------------------------------------------------
 # tailoring 'less'
@@ -267,6 +273,12 @@ alias moer='more'
 alias moew='more'
 alias kk='ll'
 
+#-------------------------------------------------------------
+# execution shortcuts
+#-------------------------------------------------------------
+alias python='/usr/bin/python3.6'
+alias pip='python3.6 -m pip'
+alias python2='/usr/bin/python2'
 
 #-------------------------------------------------------------
 # A few fun ones
@@ -414,6 +426,24 @@ function extract()      # Handy Extract Program.
      fi
 }
 
+function mp3get()
+{
+     youtube-dl -x --audio-format mp3 --audio-quality 0 "$1" 
+}
+
+function mp4convert()
+{
+     ffmpeg -i "$1.MTS" -vcodec copy -acodec copy -sn "$1.mp4"
+}
+
+function backup()
+{
+     mv "$1" "$1.bak"
+}
+
+alias crypt="aescrypt -e"
+alias decrypt="aescrypt -d"
+
 #-------------------------------------------------------------
 # Process/system related functions:
 #-------------------------------------------------------------
@@ -439,27 +469,28 @@ function killps()                 # Kill by process name.
     done
 }
 
-function my_ip() # Get IP adresses.
+function myIP()
 {
-    MY_IP=$(/sbin/ifconfig ppp0 | awk '/inet/ { print $2 } ' | \
-sed -e s/addr://)
-    MY_ISP=$(/sbin/ifconfig ppp0 | awk '/P-t-P/ { print $3 } ' | \
-sed -e s/P-t-P://)
+	MY_IP=$(hostname -I | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" | head -n1)
+	echo -e "\n${RED}Local IP Address :$NC" ; echo ${MY_IP:-"Not connected"}		
+	
+	MY_TUNNEL=$(hostname -I | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" | tail -n1)
+  echo -e "\n${RED}VPN Tunnel :$NC" ; echo ${MY_TUNNEL:-"Not connected"}
+  
+  MY_ISP=`wget http://ipecho.net/plain -O - -q ; echo`  
+  echo -e "\n${RED}External IP Address :$NC" ; echo ${MY_ISP:-"Not connected"}
 }
 
 function ii()   # Get current host related info.
 {
-    echo -e "\nYou are logged on ${RED}$HOST"
+    echo -e "\nYou are logged on ${RED}$HOSTNAME"
     echo -e "\nAdditionnal information:$NC " ; uname -a
     echo -e "\n${RED}Users logged on:$NC " ; w -h
     echo -e "\n${RED}Current date :$NC " ; date
     echo -e "\n${RED}Machine stats :$NC " ; uptime
     echo -e "\n${RED}Memory stats :$NC " ; free
-    my_ip 2>&- ;
-    echo -e "\n${RED}Local IP Address :$NC" ; echo ${MY_IP:-"Not connected"}
-    echo -e "\n${RED}ISP Address :$NC" ; echo ${MY_ISP:-"Not connected"}
+		myIP
     echo -e "\n${RED}Open connections :$NC "; netstat -pan --inet;
-    echo
 }
 
 #-------------------------------------------------------------
@@ -492,8 +523,35 @@ function corename()   # Get name of app that created a corefile.
     done 
 }
 
+function myFunctions()
+{
+    echo -e "Shortcuts:"
+    echo -e " ${BLUE}ll$NC\tList Files and group directories at the beginning"
+    echo -e " ${BLUE}la$NC\tList Hidden files"
+    echo -e " ${BLUE}lx$NC\tSort by extension"
+    echo -e " ${BLUE}lk$NC\tSort by size, biggest last"
+    echo -e " ${BLUE}lc$NC\tSort by and show change time, most recent last"
+    echo -e " ${BLUE}lu$NC\tSort by and show access time, most recent last"
+	  echo -e " ${BLUE}lt$NC\tSort by date, most recent last"
+    echo -e " ${BLUE}lm$NC\tPipe through 'more'"
+	  echo -e " ${BLUE}tree$NC\tTree View of directory"
+    echo -e " ${BLUE}pi$NC\tLogin into fhem server"
+	  echo -e " ${BLUE}crypt$NC\tEncrypt a file"
+    echo -e " ${BLUE}decrypt$NC\tDecrypt a file"
+    echo -e ""
+    echo -e "Functions:"
+    echo -e " ${BLUE}lowercase$NC\tChange filenames to lowercase: myFile.txt --> myfile.txt" 
+    echo -e " ${BLUE}extract$NC\tExtracts compressed file"
+    echo -e " ${BLUE}corename$NC\tReturns name of app that created a file"
+    echo -e " ${BLUE}backup$NC\t\tCreates a backup copy, ending in .bak"
+    echo -e " ${BLUE}swap$NC\t\tChange name of both files: swap a b --> b a"
+    echo -e " ${BLUE}mp3get$NC\t\tDownload as mp3 from youtube"
+    echo -e " ${BLUE}ii$NC\t\tReturns various system information"
+}
 
-
+alias mycommands=myFunctions
+alias myfunctions=myFunctions
+alias myCommands=myFunctions
 
 #=========================================================================
 # PROGRAMMABLE COMPLETION - ONLY SINCE BASH-2.04
@@ -813,3 +871,24 @@ complete -o default -F _meta_comp command type which man nice time
 # sh-shell:bash
 # End:
 
+# Load my Aliases
+#if [ -f ~/.bash_aliases ]; then
+#    . ~/.bash_aliases
+#fi
+
+# added by Anaconda3 5.3.1 installer
+# >>> conda init >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$(CONDA_REPORT_ERRORS=false '/home/cola/Software/Anaconda3/bin/conda' shell.bash hook 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    \eval "$__conda_setup"
+else
+    if [ -f "/home/cola/Software/Anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/home/cola/Software/Anaconda3/etc/profile.d/conda.sh"
+        CONDA_CHANGEPS1=false conda activate base
+    else
+        \export PATH="/home/cola/Software/Anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda init <<<
