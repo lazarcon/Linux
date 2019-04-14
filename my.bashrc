@@ -247,8 +247,8 @@ alias tree='tree -Csu'     # nice alternative to 'recursive ls'
 # SSH Connections
 alias pi='ssh pi@raspberrypi'
 alias mediacenter='ssh root@mediacenter'
-alias aws='ssh -i ~/Workspaces/Server/AWS/AWSKeypair.pem ec2-user@ec2-52-16-84-23.eu-west-1.compute.amazonaws.com'
-alias awscp='scp -i ~/Workspaces/Server/AWS/AWSKeypair.pem ~/Projects/Tiefer-Gedacht/tiefer-gedacht.sql ec2-user@ec2-52-16-84-23.eu-west-1.compute.amazonaws.com:~'
+alias aws='ssh -i ~/Projects/AWS/AWSKeypair.pem ec2-user@ec2-52-16-84-23.eu-west-1.compute.amazonaws.com'
+alias awscp='scp -i ~/Projects/AWS/AWSKeypair.pem ~/Projects/Tiefer-Gedacht/tiefer-gedacht.sql ec2-user@ec2-52-16-84-23.eu-west-1.compute.amazonaws.com:~'
 
 #-------------------------------------------------------------
 # tailoring 'less'
@@ -283,8 +283,6 @@ alias python2='/usr/bin/python2'
 #-------------------------------------------------------------
 # A few fun ones
 #-------------------------------------------------------------
-
-
 function xtitle()      # Adds some text in the terminal frame.
 {
     case "$TERM" in
@@ -331,7 +329,6 @@ function xpdf() { command xpdf "$@" & }
 #-------------------------------------------------------------
 # File & string-related functions:
 #-------------------------------------------------------------
-
 
 # Find a file with a pattern in name:
 function ff() { find . -type f -iname '*'$*'*' -ls ; }
@@ -390,7 +387,6 @@ function lowercase()  # move filenames to lowercase
     done
 }
 
-
 function swap()  # Swap 2 filenames around, if they exist
 {                #(from Uzi's bashrc).
     local TMPFILE=tmp.$$ 
@@ -426,6 +422,15 @@ function extract()      # Handy Extract Program.
      fi
 }
 
+function backup()
+{
+     mv "$1" "$1.bak"
+}
+
+#-------------------------------------------------------------
+# Conversions functions:
+#-------------------------------------------------------------
+
 function mp3get()
 {
      youtube-dl -x --audio-format mp3 --audio-quality 0 "$1" 
@@ -436,22 +441,46 @@ function mp4convert()
      ffmpeg -i "$1.MTS" -vcodec copy -acodec copy -sn "$1.mp4"
 }
 
-function backup()
+function md2A4P()
 {
-     mv "$1" "$1.bak"
+     rm -f "$1.pdf"
+     pandoc --from=markdown --output="$1.pdf" "$1.md" \
+            --variable=geometry:"margin=1cm,paperheight=842pt,paperwidth=595pt" \
+            --highlight-style=espresso
 }
 
-alias crypt="aescrypt -e"
-alias decrypt="aescrypt -d"
+function md2A4L()
+{
+     rm -f "$1.pdf"
+     pandoc --from=markdown --output="$1.pdf" "$1.md" \
+            --variable=geometry:"margin=1cm,paperheight=595pt,paperwidth=842pt" \
+            --highlight-style=espresso
+}
+
+function md2tex()
+{
+    rm -f "$1.tex"
+    pandoc --from=markdown --output="$1.tex" "$1.md" --to=latex
+}
+
+function md2epub()
+{
+    rm -f "$1.epub"
+    pandoc --from=markdown --output="$1.epub" "$1.md"
+}
+
+function md2html()
+{
+    rm -f "$1.tex"
+    pandoc --from=markdown --output="$1.tex" "$1.md" --to=latex --standalone
+    htlatex "$1.tex"
+}
 
 #-------------------------------------------------------------
 # Process/system related functions:
 #-------------------------------------------------------------
-
-
 function my_ps() { ps $@ -u $USER -o pid,%cpu,%mem,bsdtime,command ; }
 function pp() { my_ps f | awk '!/awk/ && $0~var' var=${1:-".*"} ; }
-
 
 function killps()                 # Kill by process name.
 {
@@ -506,7 +535,6 @@ function repeat()       # Repeat n times command.
     done
 }
 
-
 function ask()          # See 'killps' for example of use.
 {
     echo -n "$@" '[y/n] ' ; read ans
@@ -523,7 +551,38 @@ function corename()   # Get name of app that created a corefile.
     done 
 }
 
+alias crypt="aescrypt -e"
+alias decrypt="aescrypt -d"
+
+#-------------------------------------------------------------
+# Help:
+#-------------------------------------------------------------
 function myFunctions()
+{
+    echo -e "File Functions:"
+    echo -e " ${BLUE}extract$NC\tExtracts compressed file"
+    echo -e " ${BLUE}backup$NC\t\tCreates a backup copy, ending in .bak"
+    echo -e " ${BLUE}lowercase$NC\tChange filenames to lowercase: myFile.txt --> myfile.txt" 
+    echo -e " ${BLUE}corename$NC\tReturns name of app that created a file"
+    echo -e " ${BLUE}swap$NC\t\tChange name of both files: swap a b --> b a"
+		echo -e " ${BLUE}ff$NC\t\tFind a file with a pattern in name"
+    echo -e "Conversion Functions:"
+    echo -e " ${BLUE}mp4convert$NC\tConverts MTS Video to mp4"
+    echo -e " ${BLUE}md2A4L$NC\tConverts markdown to A4 Landscape PDF"
+    echo -e " ${BLUE}md2A4P$NC\tConverts markdown to A4 Portrait PDF"
+    echo -e " ${BLUE}md2html$NC\tConverts markdown to HTML"
+    echo -e " ${BLUE}md2tex$NC\tConverts markdown to latex"
+		echo -e "Info Functions:"
+    echo -e " ${BLUE}ii$NC\t\tReturns various system information"
+    echo -e " ${BLUE}myIP$NC\tReturns connection information"
+    echo -e "Misc Functions:"
+   	echo -e " ${BLUE}mp3get$NC\t\tDownload as mp3 from youtube"
+}
+alias mycommands=myFunctions
+alias myfunctions=myFunctions
+alias myCommands=myFunctions
+
+function myShortcuts()
 {
     echo -e "Shortcuts:"
     echo -e " ${BLUE}ll$NC\tList Files and group directories at the beginning"
@@ -538,20 +597,9 @@ function myFunctions()
     echo -e " ${BLUE}pi$NC\tLogin into fhem server"
 	  echo -e " ${BLUE}crypt$NC\tEncrypt a file"
     echo -e " ${BLUE}decrypt$NC\tDecrypt a file"
-    echo -e ""
-    echo -e "Functions:"
-    echo -e " ${BLUE}lowercase$NC\tChange filenames to lowercase: myFile.txt --> myfile.txt" 
-    echo -e " ${BLUE}extract$NC\tExtracts compressed file"
-    echo -e " ${BLUE}corename$NC\tReturns name of app that created a file"
-    echo -e " ${BLUE}backup$NC\t\tCreates a backup copy, ending in .bak"
-    echo -e " ${BLUE}swap$NC\t\tChange name of both files: swap a b --> b a"
-    echo -e " ${BLUE}mp3get$NC\t\tDownload as mp3 from youtube"
-    echo -e " ${BLUE}ii$NC\t\tReturns various system information"
 }
+alias myshortcuts=myShortcuts
 
-alias mycommands=myFunctions
-alias myfunctions=myFunctions
-alias myCommands=myFunctions
 
 #=========================================================================
 # PROGRAMMABLE COMPLETION - ONLY SINCE BASH-2.04
