@@ -1,4 +1,4 @@
-/#!/bin/bash
+#!/bin/bash
 # File: mountBackupServer.sh
 # Author: Constantin Lazari
 # Date: 2017-06-07
