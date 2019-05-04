@@ -36,7 +36,7 @@
 # Param1: path to system-backup
 #############################################################################################################
 DATABASE_FOLDER=$1/databases/mysql;
-DATABASES="mysql recipes TieferGedacht";
+DATABASES="mysql recipes TieferGedacht mayan AmHollbusch1";
 echo "  Backing up mysql databases ..."
 for DATABASE in $DATABASES
 do

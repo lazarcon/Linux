@@ -40,6 +40,7 @@ MACHINE=Zenon;
 BACKUP_SERVER_NAME=Bacchus;
 BACKUP_SERVER_MAC=00:08:9B:CD:4E:3E;
 MOUNT_POINT=/media/cola/Qnap;
+ROOT_FOLDER=/home/cola/Workspaces/Linux;
 BACKUP_FOLDER=$MOUNT_POINT/Backups/$MACHINE/Linux;
 BACKUP_NTFS=$MOUNT_POINT/Backups/$MACHINE/NTFS;
 #BACKUP_FOLDER=smb://192.168.178.33/cola/Backups/Zenon/Linux;
@@ -47,20 +48,20 @@ BACKUP_NTFS=$MOUNT_POINT/Backups/$MACHINE/NTFS;
 #source ./jobs/startBackupServer.sh $BACKUP_SERVER_NAME $BACKUP_SERVER_MAC
 
 # Mount the Backup-Server:
-source ./jobs/mountBackupServer.sh $BACKUP_SERVER_NAME $MOUNT_POINT
+source $ROOT_FOLDER/jobs/mountBackupServer.sh $BACKUP_SERVER_NAME $MOUNT_POINT
 
 # Backup system files
-source ./jobs/backupDatabases.sh $BACKUP_FOLDER
-source ./jobs/backupSystem.sh $BACKUP_FOLDER
+source $ROOT_FOLDER/jobs/backupDatabases.sh $BACKUP_FOLDER
+source $ROOT_FOLDER/jobs/backupSystem.sh $BACKUP_FOLDER
 
 # Backup NTFS-Data
-source ./jobs/backupNTFS.sh $BACKUP_NTFS
+source $ROOT_FOLDER/jobs/backupNTFS.sh $BACKUP_NTFS
 
 # Sync user files
-source ./jobs/backupCola.sh $BACKUP_FOLDER
+source $ROOT_FOLDER/jobs/backupCola.sh $BACKUP_FOLDER
 
 # Unmount the Backup-Server:
-source ./jobs/umountBackupServer.sh MOUNT_POINT
+source $ROOT_FOLDER/jobs/umountBackupServer.sh MOUNT_POINT
 
 # Shut down the Backup-Server again:
 #source ./jobs/shutdownBackupServer.sh BACKUP_SERVER_NAME
