@@ -22,7 +22,7 @@ do
     echo -n "   Pushing $repo ...";
     cd $repo;
     git add -A;
-    git commit m "$message";
+    git commit -m "$message";
     git push;
     echo " done"
 done
