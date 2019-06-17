@@ -44,7 +44,9 @@ ROOT_FOLDER=/home/cola/Workspaces/Linux/backup;
 BACKUP_FOLDER=$MOUNT_POINT/Backups/$MACHINE/Linux;
 BACKUP_NTFS=$MOUNT_POINT/Backups/$MACHINE/NTFS;
 
-# Asign Machine Name according to host
+# Asign Machine Name according to hostname
+# show hostname: $hostname
+# change hostname: $sudo hostnamectl set-hostname NEWNAME
 if [ "$HOSTNAME" == "Helena" ]; 
 then
         MACHINE="Lenovo"
