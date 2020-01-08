@@ -39,7 +39,10 @@
 SYSTEM_FOLDER=$1/system;
 echo "Saving list of installed packages to "
 echo "  $SYSTEM_FOLDER"
-dpkg --get-selections | grep -v deinstall > $SYSTEM_FOLDER/installedPackages.txt
+dpkg --get-selections | grep -v deinstall > $SYSTEM_FOLDER/packages.list
+cp -R /etc/apt/sources.list* $SYSTEM_FOLDER/
+apt-key exportall > $SYSTEM_FOLDER/Repo.keys
+
 echo "Backing up system files and home directories excluding \"cola\"..."
 # Switch to root directory to backup system files
 cd / > /dev/null
