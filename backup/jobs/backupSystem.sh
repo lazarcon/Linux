@@ -61,6 +61,9 @@ echo "  Backup of \"/usr/local\" created"
 tar -cpzf $SYSTEM_FOLDER/usr.tar.gz --exclude=usr/local usr
 echo "  Backup of \"/usr\" created"
 
+tar -cpzf $SYSTEM_FOLDER/opt.tar.gz opt
+echo "  Backup of \"/opt\" created"
+
 tar --exclude=var/run --exclude=var/cache --exclude=var/tmp -cpzf $SYSTEM_FOLDER/var.tar.gz var
 echo "  Backup of \"/var\" created"
 # Switch back to original directory
