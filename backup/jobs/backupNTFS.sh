@@ -45,12 +45,18 @@ tar -cpzf $1/Win/Users.tar.gz Win/Users
 echo "  Backup of \"/Win/Users\" created"
 tar -cpzf $1/Mayan.tar.gz Mayan
 echo "  Backup of \"/Mayan\" created"
+echo "  Now Syncing Media Files:"
+
+rsync -za /media/NTFS/Media/Texts/ /media/cola/Qnap/Backups/Zenon/NTFS/Media/Texts/ > /dev/null
+echo "    - Texts synced "
+rsync -za /media/NTFS/Media/Texts/ /media/cola/Qnap/Backups/Zenon/NTFS/Media/Texts/ > /dev/null
+echo "    - Texts synced "
 
 # WoW Backup
-tar -cpzf $1/Win/WoW/AddOns.tar.gz Win/Program\ Files/WoW/_retail_/Interface/AddOns
-echo "  Backup of \"/Win/Program Files/WoW/_retail_/Interface/AddOns\" created"
-tar -cpzf $1/Win/WoW/WTF.tar.gz Win/Program\ Files/WoW/_retail_/WTF
-echo "  Backup of \"/Win/Program Files/WoW/_retail_/WTF\" created"
+#tar -cpzf $1/Win/WoW/AddOns.tar.gz Win/Program\ Files/WoW/_retail_/Interface/AddOns
+#echo "  Backup of \"/Win/Program Files/WoW/_retail_/Interface/AddOns\" created"
+#tar -cpzf $1/Win/WoW/WTF.tar.gz Win/Program\ Files/WoW/_retail_/WTF
+#echo "  Backup of \"/Win/Program Files/WoW/_retail_/WTF\" created"
 #tar -cpzf $1/Win/WoW/MyThoughts.tar.gz Win/Program\ Files/WoW/MyThoughts
 #echo "  Backup of \"/Win/Program Files/WoW/Interface/MyThoughts\" created"
 #tar -cpzf $1/Win/WoW/TradeSkillMaster.tar.gz Win/Program\ Files/WoW/TradeSkillMaster
