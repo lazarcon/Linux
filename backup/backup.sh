@@ -41,22 +41,22 @@ BACKUP_SERVER_NAME=Bacchus;
 BACKUP_SERVER_MAC=00:08:9B:CD:4E:3E;
 MOUNT_POINT=/media/cola/Qnap;
 ROOT_FOLDER=/home/cola/Workspaces/Linux/backup;
-BACKUP_FOLDER=$MOUNT_POINT/Backups/$MACHINE/Linux;
-BACKUP_NTFS=$MOUNT_POINT/Backups/$MACHINE/NTFS;
+
 
 # Asign Machine Name according to hostname
 # show hostname: $hostname
 # change hostname: $sudo hostnamectl set-hostname NEWNAME
-if [ "$HOSTNAME" == "Helena" ]; 
+if [ "$HOSTNAME" == "Helena" ];
 then
         MACHINE="Lenovo"
-elif [ "$HOSTNAME" ==  "Zeus" ] 
+elif [ "$HOSTNAME" ==  "Zeus" ]
 then
         MACHINE="Zenon"
 else
         MACHINE="Unknown"
 fi
-
+BACKUP_FOLDER=$MOUNT_POINT/Backups/$MACHINE/Linux;
+BACKUP_NTFS=$MOUNT_POINT/Backups/$MACHINE/NTFS;
 #BACKUP_FOLDER=smb://192.168.178.33/cola/Backups/Zenon/Linux;
 # Start the Backup-Server:
 #source ./jobs/startBackupServer.sh $BACKUP_SERVER_NAME $BACKUP_SERVER_MAC
