@@ -41,7 +41,10 @@ echo "  Backing up mysql databases ..."
 for DATABASE in $DATABASES
 do
   STORE_PATH="$DATABASE_FOLDER/$DATABASE.sql";
-  rm -f $STORE_PATH
+  BACKUP_PATH="$STORE_PATH.previous"
+  #rm -f $STORE_PATH
+  rm -f $BACKUP_PATH
+  mv $STORE_PATH $BACKUP_PATH
   mysqldump --defaults-extra-file=credentials.cnf $DATABASE > $STORE_PATH
   echo "    Backup of \"$DATABASE\" created"
 done
@@ -53,8 +56,11 @@ echo "  Backing up postgres databases ..."
 for DATABASE in $DATABASES
 do
   STORE_PATH="$DATABASE_FOLDER/$DATABASE.psql";
-  rm -f $STORE_PATH
-  sudo -u postgres pg_dump $DATABASE > "$DATABASE.psql"
+  BACKUP_PATH="$STORE_PATH.previous"
+  #rm -f $STORE_PATH
+  rm -f $BACKUP_PATH
+  mv $STORE_PATH $BACKUP_PATH
+  sudo -u postgres pg_dump --clean --create $DATABASE > "$DATABASE.psql"
   mv "$DATABASE.psql" $STORE_PATH
   echo "    Backup of \"$DATABASE\" created"
 done
