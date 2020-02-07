@@ -46,11 +46,11 @@ echo "  Backup of \"/Win/Users\" created"
 tar -cpzf $1/Mayan.tar.gz Mayan
 echo "  Backup of \"/Mayan\" created"
 echo "  Now Syncing Media Files:"
-
-rsync -za /media/NTFS/Media/Texts/ /media/cola/Qnap/Backups/Zenon/NTFS/Media/Texts/ > /dev/null
-echo "    - Texts synced "
-rsync -za /media/NTFS/Media/Texts/ /media/cola/Qnap/Backups/Zenon/NTFS/Media/Texts/ > /dev/null
-echo "    - Texts synced "
+cd Media
+for d in */; do
+  rsync -za "/media/NTFS/Media/$d" "/media/cola/Qnap/Backups/Zenon/NTFS/Media/$d" > /dev/null
+  echo "    - $d synced "
+done
 
 # WoW Backup
 #tar -cpzf $1/Win/WoW/AddOns.tar.gz Win/Program\ Files/WoW/_retail_/Interface/AddOns
