@@ -48,7 +48,7 @@ echo "  Backup of \"/Mayan\" created"
 echo "  Now Syncing Media Files:"
 cd Media
 for d in */; do
-  rsync -za "/media/NTFS/Media/$d" "/media/cola/Qnap/Backups/Zenon/NTFS/Media/$d" > /dev/null
+  rsync -avz --delete --progress -e "/media/NTFS/Media/$d" "/media/cola/Qnap/Backups/Zenon/NTFS/Media/$d"
   echo "    - $d synced "
 done
 
