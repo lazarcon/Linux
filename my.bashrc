@@ -8,7 +8,7 @@
 # Here is the place to define your aliases, functions and
 # other interactive features like your prompt.
 #
-# The majority of the code here assumes you are on a GNU 
+# The majority of the code here assumes you are on a GNU
 # system (most likely a Linux box) and is based on code found
 # on Usenet or internet. See for instance:
 #
@@ -28,55 +28,85 @@
 # $source ~/.bashrc
 
 #-------------------------------------------------------------
+# Exit, if not running interactively
+#-------------------------------------------------------------
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+#-------------------------------------------------------------
 # Source global definitions (if any)
 #-------------------------------------------------------------
-
-
 if [ -f /etc/bashrc ]; then
-        . /etc/bashrc   # --> Read /etc/bashrc, if present.
+  . /etc/bashrc   # --> Read /etc/bashrc, if present.
 fi
 
-#-------------------------------------------------------------
-# Automatic setting of $DISPLAY (if not set already).
-# This works for linux - your mileage may vary. ... 
-# The problem is that different types of terminals give
-# different answers to 'who am i' (rxvt in particular can be
-# troublesome).
-# I have not found a 'universal' method yet.
-#-------------------------------------------------------------
-function get_xserver ()
-{
-    case $TERM in
-       xterm )
-            XSERVER=$(who am i | awk '{print $NF}' | tr -d ')''(' ) 
-            # Ane-Pieter Wieringa suggests the following alternative:
-            # I_AM=$(who am i)
-            # SERVER=${I_AM#*(}
-            # SERVER=${SERVER%*)}
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+HISTCONTROL=ignoreboth
 
-            XSERVER=${XSERVER%%:*}
-            ;;
-        aterm | rxvt)
-        # Find some code that works here. ...
-            ;;
-    esac  
-}
+# append to the history file, don't overwrite it
+shopt -s histappend
 
-if [ -z ${DISPLAY:=""} ]; then
-    get_xserver
-    if [[ -z ${XSERVER}  || ${XSERVER} == $(hostname) || \
-      ${XSERVER} == "unix" ]]; then 
-        DISPLAY=":0.0"          # Display on local host.
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# set variable identifying the chroot you work in (used in the prompt below)
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+    debian_chroot=$(cat /etc/debian_chroot)
+fi
+
+# set a fancy prompt (non-color, unless we know we "want" color)
+case "$TERM" in
+    xterm-color|*-256color) color_prompt=yes;;
+esac
+
+# uncomment for a colored prompt, if the terminal has the capability; turned
+# off by default to not distract the user: the focus in a terminal window
+# should be on the output of commands, not on the prompt
+force_color_prompt=yes
+
+if [ -n "$force_color_prompt" ]; then
+    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+	# We have color support; assume it's compliant with Ecma-48
+	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+	# a case would tend to support setf rather than setaf.)
+	color_prompt=yes
     else
-        DISPLAY=${XSERVER}:0.0  # Display on remote host.
+	color_prompt=
     fi
 fi
 
-export DISPLAY
+if [ "$color_prompt" = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+fi
+unset color_prompt force_color_prompt
 
-#-------------------------------------------------------------
-# Some settings
-#-------------------------------------------------------------
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+xterm*|rxvt*)
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    ;;
+*)
+    ;;
+esac
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
 
 ulimit -S -c 0          # Don't want any coredumps.
 set -o notify
@@ -100,7 +130,6 @@ shopt -s extglob        # Necessary for programmable completion.
 shopt -u mailwarn
 unset MAILCHECK         # Don't want my shell to warn me of incoming mail.
 
-
 export TIMEFORMAT=$'\nreal %3R\tuser %3U\tsys %3S\tpcpu %P\n'
 export HISTTIMEFORMAT="%H:%M > "
 export HISTIGNORE="&:bg:fg:ll:h"
@@ -122,71 +151,15 @@ GREEN='\e[1;32m'
 NC='\e[0m'              # No Color
 # --> Nice. Has the same effect as using "ansi.sys" in DOS.
 
-
 # Looks best on a terminal with black background.....
-
 #echo -e "${CYAN}This is BASH ${RED}${BASH_VERSION%.*}\
 #${CYAN} - DISPLAY on ${RED}$DISPLAY${NC}"
-lsb_release -d | awk {'print $2" "$3'}
-date
 
 function _exit()        # Function to run upon exit of shell.
 {
     echo -e "${RED}Have a good time!${NC}"
 }
 trap _exit EXIT
-
-
-#-------------------------------------------------------------
-# Shell Prompt
-#-------------------------------------------------------------
-
-
-if [[ "${DISPLAY%%:0*}" != "" ]]; then
-    HILIT=${red}   # remote machine: prompt will be partly red
-else
-    HILIT=${cyan}  # local machine: prompt will be partly cyan
-fi
-
-#  --> Replace instances of \W with \w in prompt functions below
-#+ --> to get display of full path name.
-
-function fastprompt()
-{
-    unset PROMPT_COMMAND
-    case $TERM in
-        *term | rxvt )
-            PS1="${HILIT}[\h]$NC \w >" ;;
-        linux )
-            PS1="${HILIT}[\h]$NC \w >" ;;
-        *)
-            PS1="[\h] \W > " ;;
-    esac
-}
-
-
-_powerprompt()
-{
-    LOAD=$(uptime|sed -e "s/.*: \([^,]*\).*/\1/" -e "s/ //g")
-}
-
-function powerprompt()
-{
-
-    PROMPT_COMMAND=_powerprompt
-    case $TERM in
-        *term | rxvt  )
-			# Locale case
-            PS1="${HILIT}[\A - \$LOAD]$NC\n[\u@\h \#] \w >" ;;
-        linux )
-            PS1="${HILIT}[\A - \$LOAD]$NC\n[\u@\h \#] \w >" ;;
-        * )
-            PS1="[\A - \$LOAD]\n[\u@\h \#] \w > " ;;
-    esac
-}
-
-powerprompt     # This is the default prompt -- might be slow.
-                # If too slow, use fastprompt instead. ...
 
 #===============================================================
 #
@@ -214,7 +187,7 @@ alias mkdir='mkdir -p'
 alias h='history'
 alias j='jobs -l'
 alias which='type -a'
-alias ..='cd ..'  
+alias ..='cd ..'
 alias path='echo -e ${PATH//:/\\n}'
 alias libpath='echo -e ${LD_LIBRARY_PATH//:/\\n}'
 alias print='/usr/bin/lp -o nobanner -d $LPDEST'
@@ -249,6 +222,7 @@ alias pi='ssh pi@raspberrypi'
 alias mediacenter='ssh root@mediacenter'
 alias aws='ssh -i ~/Projects/AWS/AWSKeypair.pem ec2-user@ec2-52-16-84-23.eu-west-1.compute.amazonaws.com'
 alias awscp='scp -i ~/Projects/AWS/AWSKeypair.pem ~/Projects/Tiefer-Gedacht/tiefer-gedacht.sql ec2-user@ec2-52-16-84-23.eu-west-1.compute.amazonaws.com:~'
+alias olymp='ssh ubuntu@olymp'
 
 #-------------------------------------------------------------
 # tailoring 'less'
@@ -261,7 +235,6 @@ export LESSOPEN='|/usr/bin/lesspipe.sh %s 2>&-'
    # Use this if lesspipe.sh exists
 export LESS='-i -N -w  -z-4 -g -e -M -X -F -R -P%t?f%f \
 :stdin .?pb%pb\%:?lbLine %lb:?bbByte %bb:-...'
-
 
 #-------------------------------------------------------------
 # spelling typos - highly personnal and keyboard-dependent :-)
@@ -288,7 +261,7 @@ function xtitle()      # Adds some text in the terminal frame.
     case "$TERM" in
         *term | rxvt)
             echo -n -e "\033]0;$*\007" ;;
-        *)  
+        *)
             ;;
     esac
 }
@@ -303,10 +276,9 @@ function man()
 {
     for i ; do
         xtitle The $(basename $1|tr -d .[:digit:]) manual
-        command man -F -a "$i"
+        command man -a "$i"
     done
 }
-
 
 #-------------------------------------------------------------
 # Make the following commands run in background automatically:
@@ -324,7 +296,6 @@ function te()  # Wrapper around xemacs/gnuserv ...
 function soffice() { command soffice "$@" & }
 function firefox() { command firefox "$@" & }
 function xpdf() { command xpdf "$@" & }
-
 
 #-------------------------------------------------------------
 # File & string-related functions:
@@ -358,7 +329,7 @@ Usage: fstr [-i] \"pattern\" [\"filename pattern\"] "
         return;
     fi
     find . -type f -name "${2:-*}" -print0 | \
-    xargs -0 egrep --color=always -sn ${case} "$1" 2>&- | more 
+    xargs -0 egrep --color=always -sn ${case} "$1" 2>&- | more
 
 }
 
@@ -389,13 +360,13 @@ function lowercase()  # move filenames to lowercase
 
 function swap()  # Swap 2 filenames around, if they exist
 {                #(from Uzi's bashrc).
-    local TMPFILE=tmp.$$ 
+    local TMPFILE=tmp.$$
 
     [ $# -ne 2 ] && echo "swap: 2 arguments needed" && return 1
     [ ! -e $1 ] && echo "swap: $1 does not exist" && return 1
     [ ! -e $2 ] && echo "swap: $2 does not exist" && return 1
 
-    mv "$1" $TMPFILE 
+    mv "$1" $TMPFILE
     mv "$2" "$1"
     mv $TMPFILE "$2"
 }
@@ -433,7 +404,7 @@ function backup()
 
 function mp3get()
 {
-     youtube-dl -x --audio-format mp3 --audio-quality 0 "$1" 
+     youtube-dl -x --audio-format mp3 --audio-quality 0 "$1"
 }
 
 function mp4convert()
@@ -501,12 +472,12 @@ function killps()                 # Kill by process name.
 function myIP()
 {
 	MY_IP=$(hostname -I | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" | head -n1)
-	echo -e "\n${RED}Local IP Address :$NC" ; echo ${MY_IP:-"Not connected"}		
-	
+	echo -e "\n${RED}Local IP Address :$NC" ; echo ${MY_IP:-"Not connected"}
+
 	MY_TUNNEL=$(hostname -I | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" | tail -n1)
   echo -e "\n${RED}VPN Tunnel :$NC" ; echo ${MY_TUNNEL:-"Not connected"}
-  
-  MY_ISP=`wget http://ipecho.net/plain -O - -q ; echo`  
+
+  MY_ISP=`wget http://ipecho.net/plain -O - -q ; echo`
   echo -e "\n${RED}External IP Address :$NC" ; echo ${MY_ISP:-"Not connected"}
 }
 
@@ -545,14 +516,22 @@ function ask()          # See 'killps' for example of use.
 }
 
 function corename()   # Get name of app that created a corefile.
-{ 
+{
     for file ; do
         echo -n $file : ; gdb --core=$file --batch | head -1
-    done 
+    done
 }
 
-alias crypt="aescrypt -e"
-alias decrypt="aescrypt -d"
+alias crypt="aescrypt -e -k ~/.keys/PasswordManager.key"
+alias decrypt="aescrypt -d -k ~/.keys/PasswordManager.key"
+
+# ---------------------------------------------------------------------------
+# Welcome-Screen:
+# ---------------------------------------------------------------------------
+lsb_release -d | awk {'print $2" "$3'}
+date
+# ---------------------------------------------------------------------------
+
 
 #-------------------------------------------------------------
 # Help:
@@ -562,7 +541,7 @@ function myFunctions()
     echo -e "File Functions:"
     echo -e " ${BLUE}extract$NC\tExtracts compressed file"
     echo -e " ${BLUE}backup$NC\t\tCreates a backup copy, ending in .bak"
-    echo -e " ${BLUE}lowercase$NC\tChange filenames to lowercase: myFile.txt --> myfile.txt" 
+    echo -e " ${BLUE}lowercase$NC\tChange filenames to lowercase: myFile.txt --> myfile.txt"
     echo -e " ${BLUE}corename$NC\tReturns name of app that created a file"
     echo -e " ${BLUE}swap$NC\t\tChange name of both files: swap a b --> b a"
 		echo -e " ${BLUE}ff$NC\t\tFind a file with a pattern in name"
@@ -578,7 +557,6 @@ function myFunctions()
     echo -e "Misc Functions:"
    	echo -e " ${BLUE}mp3get$NC\t\tDownload as mp3 from youtube"
 }
-alias mycommands=myFunctions
 alias myfunctions=myFunctions
 alias myCommands=myFunctions
 
@@ -686,11 +664,11 @@ complete -f -o default -X '!*.pl'  perl perl5
 COMP_WORDBREAKS=${COMP_WORDBREAKS/=/}
 
 
-_get_longopts() 
-{ 
+_get_longopts()
+{
     #$1 --help | sed  -e '/--/!d' -e 's/.*--\([^[:space:].,]*\).*/--\1/'| \
 #grep ^"$2" |sort -u ;
-    $1 --help | grep -o -e "--[^[:space:].,]*" | grep -e "$2" |sort -u 
+    $1 --help | grep -o -e "--[^[:space:].,]*" | grep -e "$2" |sort -u
 }
 
 _longopts()
@@ -876,7 +854,7 @@ _meta_comp()
     COMPREPLY=()
     cur=${COMP_WORDS[COMP_CWORD]}
     cmdline=${COMP_WORDS[@]}
-    if [ $COMP_CWORD = 1 ]; then  
+    if [ $COMP_CWORD = 1 ]; then
          COMPREPLY=( $( compgen -c $cur ) )
     else
         cmd=${COMP_WORDS[1]}            # Find command.
@@ -906,7 +884,7 @@ _meta_comp()
         fi
 
     fi
-    
+
 }
 
 
