@@ -1,9 +1,9 @@
 #!/bin/bash
 
 echo "Installing sshfs and fuse:"
-sudo apt install sshfs fuse
+sudo apt install -y sshfs fuse
 
-echo "Creating fuse group:
+echo "Creating fuse group"
 sudo groupadd fuse
 
 
@@ -18,5 +18,4 @@ sshfs pi@raspberrypi:/media/usbmusic/music ~/SambaMusic
 
 echo "Changing into Directory"
 cd ~/SambaMusic
-
 
