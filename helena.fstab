@@ -1,0 +1,18 @@
+# /etc/fstab: static file system information.
+#
+# Use 'blkid' to print the universally unique identifier for a
+# device; this may be used with UUID= as a more robust way to name devices
+# that works even if disks are added and removed. See fstab(5).
+#
+# <file system> <mount point>   <type>  <options>       <dump>  <pass>
+# / was on /dev/sda6 during installation
+UUID=977fd8be-03a9-40ef-9106-f8cb4599ee8d /               ext4    errors=remount-ro 0       1
+# swap was on /dev/sda5 during installation
+UUID=eb341bf2-899f-4b88-a197-990e7ef45217 none            swap    sw              0       0
+
+# Samba-Shares:
+#//raspberrypi/sambamusic /media/cola/SambaMusic cifs guest,uid=1000,iocharset=utf8 0 0
+#//bacchus/cola /media/cola/Qnap cifs credentials=/home/cola/.keys/qnap.cola.credentials,uid=1000,iocharset=utf8  0  0	
+//raspberrypi/fhem /media/cola/fhem cifs credentials=/home/cola/.keys/raspberrypi.pi.credentials,uid=1000,iocharset=utf8 0 0
+
+

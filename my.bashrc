@@ -215,9 +215,9 @@ alias kk='ll'
 #-------------------------------------------------------------
 # execution shortcuts
 #-------------------------------------------------------------
-alias python='/usr/bin/python3.6'
-alias pip='python3.6 -m pip'
-alias python2='/usr/bin/python2'
+#alias python='/usr/bin/python3.6'
+#alias pip='python3.6 -m pip'
+#alias python2='/usr/bin/python2'
 
 #-------------------------------------------------------------
 # A few fun ones
