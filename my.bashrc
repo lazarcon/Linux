@@ -347,7 +347,7 @@ function extract()      # Handy Extract Program.
 
 function backup()
 {
-    mv "$1" "$1.bak"
+    cp "$1" "$1.bak"
 }
 function mp3get()
 {
@@ -415,12 +415,20 @@ function killps()                 # Kill by process name.
     done
 }
 
+function myDNS()
+{
+        MY_DNS=$(nmcli dev show | grep DNS | awk '{print $2}')
+        echo -ne "${GREEN}DNS: ${green}$DNS$NC\n"
+}
+
 function myIP()
 {
-	MY_IP=$(hostname -I | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" | head -n1)
+  MY_DNS=$(nmcli dev show | grep DNS | awk '{print $2}')
+  MY_IP=$(hostname -I | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" | head -n1)
   MY_TUNNEL=$(hostname -I | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}" | tail -n1)
   MY_ISP=$(wget http://ipecho.net/plain -O - -q)
-	echo -ne "Local IP: ${green}$MY_IP$NC, Tunneling: ${yellow}" ; echo -ne ${MY_TUNNEL:-"Not connected"} ; echo -e "$NC, External IP: ${red}$MY_ISP$NC"
+  echo -ne "Local IP: ${green}$MY_IP$NC\tExternal IP: ${red}$MY_ISP$NC\n"
+  echo -ne "DNS: ${green}$MY_DNS$NC\t\tTunneling: ${yellow}$MY_TUNNEL$NC\n"
 }
 
 function ii()   # Get current host related info.
