@@ -1,0 +1,24 @@
+#!/bin/bash
+# Place file in /etc/NetworkManager/dispatcher.d/
+
+IFACE=$1    #wird vom NetworkManager übergeben
+BEFEHL=$2   #wird vom NetworkManager übergeben
+
+#SSHFS-Einstellungen
+PORT=22 #ssh-Port des Zielsystems
+PFAD="/home/cola/SambaMusic" # ABSOLUTE PFADANGABE im lokalen System
+KEY="/home/cola/.ssh/id_rsa" #eigener privater Schlüssel
+
+case "$BEFEHL" in 
+  up)
+    #SSHFS-Verbindung herstellen
+    #ACHTUNG: die Optionen sind Beispiele und haben keinen Anspruch auf allgemeine Gültigkeit!
+    /usr/bin/sshfs -p$PORT pi@raspberrypi:/media/usbmusic/music $PFAD -o uid=1000,gid=1000,nomap=ignore,allow_other,IdentityFile=$KEY
+    ;;
+  down)
+    /bin/fusermount -u $PFAD
+    ;;
+  *)
+    echo $"usage: $0 {up|down}" 
+    exit 1
+esac
