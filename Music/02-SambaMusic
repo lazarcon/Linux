@@ -1,24 +1,43 @@
 #!/bin/bash
 # Place file in /etc/NetworkManager/dispatcher.d/
 
-IFACE=$1    #wird vom NetworkManager übergeben
-BEFEHL=$2   #wird vom NetworkManager übergeben
+#IFACE=$1    #wird vom NetworkManager übergeben
+BEFEHL=$1   #wird vom NetworkManager übergeben
 
 #SSHFS-Einstellungen
 PORT=22 #ssh-Port des Zielsystems
 PFAD="/home/cola/SambaMusic" # ABSOLUTE PFADANGABE im lokalen System
 KEY="/home/cola/.ssh/id_rsa" #eigener privater Schlüssel
 
-case "$BEFEHL" in 
-  up)
+function connect() {
+
+  if ping -c 1 raspberrypi &> /dev/null
+  then # reachable
     #SSHFS-Verbindung herstellen
     #ACHTUNG: die Optionen sind Beispiele und haben keinen Anspruch auf allgemeine Gültigkeit!
-    /usr/bin/sshfs -p$PORT pi@raspberrypi:/media/usbmusic/music $PFAD -o uid=1000,gid=1000,nomap=ignore,allow_other,IdentityFile=$KEY
+    #/usr/bin/sshfs -p$PORT pi@raspberrypi:/media/usbmusic/music $PFAD -o uid=1000,gid=1000,nomap=ignore,allow_other,IdentityFile=$KEY;
+    /usr/bin/sshfs -p$PORT pi@raspberrypi:/media/usbmusic/music $PFAD -o uid=1000,gid=1000,nomap=ignore,IdentityFile=$KEY;
+  else # unreachable
+    if ! zenity --warning --text "Keine Verbindung zum Raspberry\!\nNochmal probieren?"; then
+      exit;
+    else
+      connect;
+    fi
+  fi
+}
+
+function disconnect() {
+  /bin/fusermount -u $PFAD;
+}
+
+case "$BEFEHL" in
+  up)
+    connect
     ;;
   down)
-    /bin/fusermount -u $PFAD
+    disconnect
     ;;
   *)
-    echo $"usage: $0 {up|down}" 
-    exit 1
+    echo $"usage: $0 {up|down}";
+    exit 1;
 esac
