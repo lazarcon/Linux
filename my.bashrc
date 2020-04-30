@@ -353,6 +353,11 @@ function mp3get()
 {
   youtube-dl -x --audio-format mp3 --audio-quality 0 "$1"
 }
+function mp4get()
+{
+  youtube-dl -f 'bestvideo[ext=mp4]+bestaudio[ext=mp3]/best[ext=mp4]/best' "$1"
+}
+
 function mp4convert()
 {
   ffmpeg -i "$1.MTS" -vcodec copy -acodec copy -sn "$1.mp4"
