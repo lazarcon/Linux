@@ -40,7 +40,7 @@
 BACKUP_SERVER_NAME=Bacchus;
 BACKUP_SERVER_MAC=00:08:9B:CD:4E:3E;
 MOUNT_POINT=/media/cola/Qnap;
-ROOT_FOLDER=/home/cola/Workspaces/Linux/backup;
+ROOT_FOLDER=/home/cola/Git/Linux/backup;
 
 
 # Asign Machine Name according to hostname
