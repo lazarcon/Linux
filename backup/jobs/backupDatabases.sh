@@ -36,7 +36,7 @@
 # Param1: path to system-backup
 #############################################################################################################
 DATABASE_FOLDER=$1/databases/mysql;
-DATABASES="mysql recipes TieferGedacht mayan AmHollbusch1 zitate";
+DATABASES="mysql recipes TieferGedacht AmHollbusch1 zitate greece";
 echo "  Backing up mysql databases ..."
 for DATABASE in $DATABASES
 do
@@ -49,19 +49,19 @@ do
   echo "    Backup of \"$DATABASE\" created"
 done
 
-cd /home/cola > /dev/null
-DATABASE_FOLDER=$1/databases/postgres;
-DATABASES="mayan";
-echo "  Backing up postgres databases ..."
-for DATABASE in $DATABASES
-do
-  STORE_PATH="$DATABASE_FOLDER/$DATABASE.psql";
-  BACKUP_PATH="$STORE_PATH.previous"
-  #rm -f $STORE_PATH
-  rm -f $BACKUP_PATH
-  mv $STORE_PATH $BACKUP_PATH
-  sudo -u postgres pg_dump --clean --create $DATABASE > "$DATABASE.psql"
-  mv "$DATABASE.psql" $STORE_PATH
-  echo "    Backup of \"$DATABASE\" created"
-done
-echo "...done"
+#cd /home/cola > /dev/null
+#DATABASE_FOLDER=$1/databases/postgres;
+#DATABASES="mayan";
+#echo "  Backing up postgres databases ..."
+#for DATABASE in $DATABASES
+#do
+#  STORE_PATH="$DATABASE_FOLDER/$DATABASE.psql";
+#  BACKUP_PATH="$STORE_PATH.previous"
+#  #rm -f $STORE_PATH
+#  rm -f $BACKUP_PATH
+#  mv $STORE_PATH $BACKUP_PATH
+#  sudo -u postgres pg_dump --clean --create $DATABASE > "$DATABASE.psql"
+#  mv "$DATABASE.psql" $STORE_PATH
+#  echo "    Backup of \"$DATABASE\" created"
+#done
+#echo "...done"

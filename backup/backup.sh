@@ -38,6 +38,7 @@
 ## Params:
 #MACHINE=Zenon;
 BACKUP_SERVER_NAME=Bacchus;
+BACKUP_SERVER_IP=192.168.178.46;
 BACKUP_SERVER_MAC=00:08:9B:CD:4E:3E;
 MOUNT_POINT=/media/cola/Qnap;
 ROOT_FOLDER=/home/cola/Git/Linux/backup;
@@ -62,7 +63,7 @@ BACKUP_NTFS=$MOUNT_POINT/Backups/$MACHINE/NTFS;
 #source ./jobs/startBackupServer.sh $BACKUP_SERVER_NAME $BACKUP_SERVER_MAC
 
 # Mount the Backup-Server:
-source $ROOT_FOLDER/jobs/mountBackupServer.sh $BACKUP_SERVER_NAME $MOUNT_POINT
+source $ROOT_FOLDER/jobs/mountBackupServer.sh $BACKUP_SERVER_IP $MOUNT_POINT
 
 # Backup system files
 source $ROOT_FOLDER/jobs/backupDatabases.sh $BACKUP_FOLDER
