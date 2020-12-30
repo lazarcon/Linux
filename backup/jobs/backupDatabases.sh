@@ -36,17 +36,21 @@
 # Param1: path to system-backup
 #############################################################################################################
 DATABASE_FOLDER=$1/databases/mysql;
-DATABASES="mysql recipes TieferGedacht AmHollbusch1 zitate greece";
-echo "  Backing up mysql databases ..."
-for DATABASE in $DATABASES
-do
-  STORE_PATH="$DATABASE_FOLDER/$DATABASE.sql";
-  BACKUP_PATH="$STORE_PATH.previous"
+CREDENTIALS=/home/cola/.keys/mySQL.credentials.cnf
+
+echo " Backing up mysql databases ..."
+for DATABASE in $(mysql --defaults-extra-file=$CREDENTIALS -e 'show databases' -s --skip-column-names); do
+#DATABASES="mysql recipes TieferGedacht AmHollbusch1 zitate greece";
+#for DATABASE in $DATABASES
+#do
+  STORE_PATH="$DATABASE_FOLDER/$DATABASE.sql.gz";
+  BACKUP_PATH="$STORE_PATH.previous";
   #rm -f $STORE_PATH
-  rm -f $BACKUP_PATH
-  mv $STORE_PATH $BACKUP_PATH
-  mysqldump --defaults-extra-file=credentials.cnf $DATABASE > $STORE_PATH
-  echo "    Backup of \"$DATABASE\" created"
+  rm -f $BACKUP_PATH > /dev/null;
+  mv $STORE_PATH $BACKUP_PATH > /dev/null;
+  mysqldump --defaults-extra-file=$CREDENTIALS $DATABASE | gzip > $STORE_PATH;
+  #mysqldump --defaults-extra-file=credentials.cnf $DATABASE > $STORE_PATH
+  echo "    Backup of \"$DATABASE\" in \"$STORE_PATH\" created"
 done
 
 #cd /home/cola > /dev/null

@@ -44,6 +44,7 @@ cp -R /etc/apt/sources.list* $SYSTEM_FOLDER/
 apt-key exportall > $SYSTEM_FOLDER/Repo.keys
 
 echo "Backing up system files and home directories excluding \"cola\"..."
+
 # Switch to root directory to backup system files
 cd / > /dev/null
 tar -cpzf $SYSTEM_FOLDER/etc.tar.gz etc
@@ -64,11 +65,11 @@ echo "  Backup of \"/usr\" created"
 tar -cpzf $SYSTEM_FOLDER/opt.tar.gz opt
 echo "  Backup of \"/opt\" created"
 
-tar --exclude=var/run --exclude=var/cache --exclude=var/tmp -cpzf $SYSTEM_FOLDER/var.tar.gz var
+tar --exclude=var/run --exclude=var/cache --exclude=var/tmp --exclude=var/lib/samba/private -cpzf $SYSTEM_FOLDER/var.tar.gz var
 echo "  Backup of \"/var\" created"
-# Switch back to original directory
 
 tar --exclude=home/cola -cpzf $1/home.tar.gz home
 echo "  Backup of \"/home\" (except home/cola) created"
 cd - > /dev/null
+rm -f /home/cola/Git/Linux/backups/jobs/exclude-sockets
 echo "... done"
