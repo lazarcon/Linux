@@ -184,11 +184,11 @@ alias tree='tree -Csu'     # nice alternative to 'recursive ls'
 #                egrep -v "^d|total "; }
 
 # SSH Connections
-alias pi='ssh pi@raspberrypi'
-alias mediacenter='ssh root@mediacenter'
-alias aws='ssh -i ~/Projects/AWS/AWSKeypair.pem ec2-user@ec2-52-16-84-23.eu-west-1.compute.amazonaws.com'
-alias awscp='scp -i ~/Projects/AWS/AWSKeypair.pem ~/Projects/Tiefer-Gedacht/tiefer-gedacht.sql ec2-user@ec2-52-16-84-23.eu-west-1.compute.amazonaws.com:~'
-alias olymp='ssh ubuntu@olymp'
+alias pi='ssh pi@raspberry.pi01'
+alias mediacenter='ssh root@mediacenter.pi02'
+#alias aws='ssh -i ~/Projects/AWS/AWSKeypair.pem ec2-user@ec2-52-16-84-23.eu-west-1.compute.amazonaws.com'
+#alias awscp='scp -i ~/Projects/AWS/AWSKeypair.pem ~/Projects/Tiefer-Gedacht/tiefer-gedacht.sql ec2-user@ec2-52-16-84-23.eu-west-1.compute.amazonaws.com:~'
+alias olymp='ssh ubuntu@olymp.pi03'
 
 #-------------------------------------------------------------
 # tailoring 'less'
