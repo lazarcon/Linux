@@ -1,3 +1,4 @@
+#Ignore
 *.tar
 *.tar.*
 *.jar
@@ -10,3 +11,7 @@
 *.sig
 
 credentials.cnf
+
+#Allow
+!sources/sources.tar.gz
+
