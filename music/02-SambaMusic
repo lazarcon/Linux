@@ -11,12 +11,12 @@ KEY="/home/cola/.ssh/id_rsa" #eigener privater Schlüssel
 
 function connect() {
 
-  if ping -c 1 raspberry.pi01 &> /dev/null
+  if ping -c 1 raspberrypi &> /dev/null
   then # reachable
     #SSHFS-Verbindung herstellen
     #ACHTUNG: die Optionen sind Beispiele und haben keinen Anspruch auf allgemeine Gültigkeit!
     #/usr/bin/sshfs -p$PORT pi@raspberrypi:/media/usbmusic/music $PFAD -o uid=1000,gid=1000,nomap=ignore,allow_other,IdentityFile=$KEY;
-    /usr/bin/sshfs -p$PORT pi@raspberry.pi01:/media/usbmusic/music $PFAD -o uid=1000,gid=1000,nomap=ignore,IdentityFile=$KEY;
+    /usr/bin/sshfs -p$PORT pi@raspberrypi:/media/usbmusic/music $PFAD -o uid=1000,gid=1000,nomap=ignore,IdentityFile=$KEY;
   else # unreachable
     if ! zenity --warning --text "Keine Verbindung zum Raspberry\!\nNochmal probieren?"; then
       exit;
