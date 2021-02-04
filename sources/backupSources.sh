@@ -1,4 +1,8 @@
 #!/bin/bash
 
+SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+
 rm -f sources.tar.gz >> /dev/null
-tar -C / -czf sources.tar.gz /etc/apt/sources.list.d/
+cd /etc/apt/
+tar -czf "$SCRIPTPATH/sources.tar.gz" ./sources.list.d/
+cd $SCRIPTPATH
