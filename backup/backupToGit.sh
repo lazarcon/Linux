@@ -6,7 +6,7 @@
 ########################
 
 # Repositories to backup
-repos="/home/cola/Git/TeX /home/cola/Git/Java /home/cola/Git/LUA /home/cola/Git/Android /home/cola/Git/Linux /home/cola/Git/Python /home/cola/Git/ /home/cola/Git/HomeWebServer";
+repos="/home/cola/Git/TeX /home/cola/Git/Java /home/cola/Git/LUA /home/cola/Git/Android /home/cola/Git/Linux /home/cola/Git/Python /home/cola/Git/HomeWebServer";
 # Remember current directory
 currentDirectory=$(pwd);
 # create current date variable
