@@ -33,6 +33,6 @@
 
 now=$(date +"%Y-%m-%d")
 adb devices
-file="/home/cola/Workspaces/Android/OnePlusXBackups/$now-backup.ad"
+file="/media/cola/Qnap/Backups/OnePlusX/$now-backup.ad"
 echo "Backing your android up to $file"
 adb backup -apk -shared -all -f $file

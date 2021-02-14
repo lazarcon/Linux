@@ -38,7 +38,7 @@
 #
 # This File is linked from /etc/init.d/mountGoogleDrive
 #############################################################################################################
-MOUNTPOINT=/media/cola/GoogleDrive
+MOUNTPOINT=/home/cola/GoogleDrive
 # Unmount with:
 #fusermount -u $MOUNTPOINT
 google-drive-ocamlfuse $MOUNTPOINT

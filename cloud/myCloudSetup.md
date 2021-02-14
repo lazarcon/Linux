@@ -18,6 +18,8 @@ sudo add-apt-repository ppa:alessandro-strada/ppa
 sudo sudo apt update && sudo apt install google-drive-ocamlfuse
 ```
 
+mountGoogleDrive.sh muss noch als Startup Application angegeben werden, damit sich der Computer stets mit GoogleDrive verbindet.
+
 ## Microsoft OneDrive
 Lässt sich ebenfalls installieren. Die notwendigen Dateien und die Anleitung findet man bei [Github](https://github.com/abraunegg/onedrive)
 
@@ -30,6 +32,12 @@ Das Programm vergisst gerne seine Autorisierung oder der Token von Microsoft lä
 
 ```
 onedrive --logout
+```
+
+Man kann das ganze auch als Dienst laufen lassen, so dass die Dateien stets abgeglichen werden:
+```
+sudo systemctl --user enable onedrive
+sudo systemctl --user start onedrive
 ```
 
 Wofür Microsoft genau zuständig sein soll, ist mir noch nicht klar.
