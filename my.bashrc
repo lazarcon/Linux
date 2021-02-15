@@ -345,6 +345,11 @@ function extract()      # Handy Extract Program.
      fi
 }
 
+function compress() #simple tar compression
+{
+tar -zcf "$1.tar.gz" $1
+}
+
 function backup()
 {
     cp "$1" "$1.bak"
