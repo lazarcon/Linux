@@ -35,30 +35,31 @@ FOLDER1=$1
 FOLDER2=$2
 OUTPUT="rm"
 
-echo "Removing duplicates of $FOLDER1 in $FOLDER2 ($OUTPUT):"
+echo "Removing duplicates of $FOLDER1 in $FOLDER2, keeping contents of $FOLDER2 and cleaning $FOLDER1"
 echo "Continue? (y/n)"
 read answer
 if [ "$answer" != "${answer#[Yy]}" ]
 then
   # Find Duplicates in two folders:
+  echo "Searching duplicates (this might take a while, be patient)"
   fdupes -r "$FOLDER1" "$FOLDER2" > "$OUTPUT.1.txt"
-  echo "  1. All duplicates listed in $OUTPUT.1.txt"
-  sed "/${FOLDER1//\//\\/}/d" "$OUTPUT.1.txt" > "$OUTPUT.2.txt"
-  echo "  2. removed all lines containing $FOLDER1"
+  echo "Removing all lines refering to $FOLDER1"
+  grep -v "^$FOLDER2" "$OUTPUT.1.txt" > "$OUTPUT.2.txt"
+  echo "Removing all empty lines"
   sed -r "/^\s*$/d" "$OUTPUT.2.txt" > "$OUTPUT.3.txt"
-  echo "  3. removed all blank lines"
-  sed "s/\(.*\)/rm -f '\1'/g" "$OUTPUT.3.txt" > "$OUTPUT.sh"
-  echo "  4. added rm -f to the beginning of every line"
-  echo "find '$FOLDER2' -empty -type d -delete" >> "$OUTPUT.sh"
-  chmod +x "./$OUTPUT.sh"
-  echo "  5. made the script $OUTPUT.sh executable"
-  "./rm.sh"
-  echo "  6. executed ./$OUTPUT.sh"
-  find "$FOLDER2" -empty -type d -delete
-  echo "  7. removing empty directories"
-  #rm -f "./rm.1.txt"
+  echo "Creating skript for removal"
+  sed "s/\(.*\)/rm -f \"\1\"/g" "$OUTPUT.3.txt" > "$OUTPUT.sh"
+  echo "Removing duplicate files"
+  chmod +x "$OUTPUT.sh"
+  "./$OUTPUT.sh"
+  echo "Removing all remaing empty folders"
+  find '$FOLDER1' -empty -type d -delete
+  echo "Moving all remaining files from $FOLDER1 to $FOLDER2"
+  mv -n "$FOLDER1" "$FOLDER2"
+  echo "  Removing created files"
+  rm -f "./rm.1.txt"
   rm -f "./rm.2.txt"
   rm -f "./rm.3.txt"
-  #rm -f "./rm.sh"
-  #echo "  8. removed all created files"
+  rm -f "./rm.sh"
+  echo "Done!"
 fi
