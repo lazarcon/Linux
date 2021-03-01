@@ -462,7 +462,7 @@ function welcomeScreen()
   MY_MEMORY=$(free -h | awk 'FNR == 2 {print $5}')
   MY_DATE=$(date '+%A %d. %B %Y')
   MY_UPTIME=$(uptime -p)
-  MY_DISK_USAGE=$(df -h / | awk 'FNR == 2 {print $4}')
+  MY_DISK_USAGE=$(df -h / | awk 'FNR == 2 {print $5}')
   clear
   xtitle Welcome back!
   echo -e "I am ${GREEN}$HOSTNAME$NC, running on ${CYAN}$MY_VERSION$NC."
