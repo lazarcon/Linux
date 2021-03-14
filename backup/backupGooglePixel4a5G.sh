@@ -1,7 +1,7 @@
 #!/bin/bash
-# File: backupSystem.sh
+# File: skript.sh
 # Author: Constantin Lazari
-# Date: 2017-06-07
+# Date: YYYY-MM-DD
 #
 # Software Notice and License
 # This work (and included software, documentation such as READMEs, or other related items)
@@ -30,41 +30,9 @@
 # Title to copyright in this software and any associated documentation will at all times remain with copyright holders.
 # This work is licensed under the W3C Software Notice and License.
 #############################################################################################################
-#
-# Creates a backup of the system:
-#
-# Param1: path to system-backup
-#############################################################################################################
-# Create a list of installed packages
-echo "Backup NTFS to $1 "
-cd /media/NTFS > /dev/null
-# Backup User Dirs
-tar -cpzf $1/Users.tar.gz Users
-echo "  Backup of \"/Users\" created"
-tar -cpzf $1/Win/Users.tar.gz Win/Users
-echo "  Backup of \"/Win/Users\" created"
-tar -cpzf $1/Mayan.tar.gz Mayan
-echo "  Backup of \"/Mayan\" created"
-echo "  Now Syncing Media Files:"
-cd Media
-for d in */; do
-  eval "rsync -avvz -P --log-file=/home/cola/Git/Linux/backup/rsync.media.log /media/NTFS/Media/$d /media/cola/Qnap/Backups/Zenon/NTFS/Media/$d" 
-  echo "    - $d synced "
-done
 
-# WoW Backup
-#tar -cpzf $1/Win/WoW/AddOns.tar.gz Win/Program\ Files/WoW/_retail_/Interface/AddOns
-#echo "  Backup of \"/Win/Program Files/WoW/_retail_/Interface/AddOns\" created"
-#tar -cpzf $1/Win/WoW/WTF.tar.gz Win/Program\ Files/WoW/_retail_/WTF
-#echo "  Backup of \"/Win/Program Files/WoW/_retail_/WTF\" created"
-#tar -cpzf $1/Win/WoW/MyThoughts.tar.gz Win/Program\ Files/WoW/MyThoughts
-#echo "  Backup of \"/Win/Program Files/WoW/Interface/MyThoughts\" created"
-#tar -cpzf $1/Win/WoW/TradeSkillMaster.tar.gz Win/Program\ Files/WoW/TradeSkillMaster
-#echo "  Backup of \"/Win/Program Files/WoW/Interface/TradeSkillMaster\" created"
-
-# Installers
-tar -cpzf $1/Win/Installers.tar.gz Win/Program\ Files/__Installers
-echo "  Backup of \"/Win/Program Files/__Installers\" created"
-
-cd - > /dev/null
-echo "... done"
+now=$(date +"%Y-%m-%d")
+adb devices
+file="/media/cola/Qnap/Backups/GooglePixel4a5G/$now-backup.ad"
+echo "Backing your android up to $file"
+adb backup -apk -shared -all -f $file

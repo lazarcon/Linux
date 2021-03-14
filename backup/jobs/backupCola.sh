@@ -55,7 +55,7 @@ for FOLDER in $FOLDERS
 do
   SOURCE="/home/cola/$FOLDER"
   TARGET="$HOME_FOLDER/$FOLDER";
-  rsync -a $SOURCE $TARGET
+  eval "rsync -a -P $SOURCE $TARGET"
   echo "  Backup of \"$SOURCE\" created"
 done
 
