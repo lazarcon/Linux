@@ -459,7 +459,7 @@ function ii()   # Get current host related info.
 function welcomeScreen()
 {
   MY_VERSION=$(lsb_release -d | awk {'print $2" "$3'})
-  MY_MEMORY=$(free -h | awk 'FNR == 2 {print $5}')
+  MY_MEMORY=$(free -h | awk 'FNR == 2 {print $4}')
   MY_DATE=$(date '+%A %d. %B %Y')
   MY_UPTIME=$(uptime -p)
   MY_DISK_USAGE=$(df -h / | awk 'FNR == 2 {print $5}')
